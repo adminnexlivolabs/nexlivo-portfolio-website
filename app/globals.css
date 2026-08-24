@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #ffffff;
+  --color-ink: #010417;
+  --color-carbon: #111117;
+  --color-graphite: #22222a;
+  --color-fog: #73737c;
+  --color-ash: #d9d9d9;
+  --color-cyan: #00c4cc;
+  --color-danger: #c0392b;
+
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: -0.24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.5;
+  --text-body-sm--letter-spacing: -0.28px;
+  --text-body: 16px;
+  --text-body--line-height: 1.5;
+  --text-body--letter-spacing: -0.32px;
+  --text-subheading: 20px;
+  --text-subheading--line-height: 1.4;
+  --text-subheading--letter-spacing: -0.4px;
+  --text-heading-sm: 26px;
+  --text-heading-sm--line-height: 1.13;
+  --text-heading-sm--letter-spacing: -0.78px;
+  --text-heading: 38px;
+  --text-heading--line-height: 1.15;
+  --text-heading--letter-spacing: -1.14px;
+  --text-heading-lg: 56px;
+  --text-heading-lg--line-height: 1.07;
+  --text-heading-lg--letter-spacing: -1.68px;
+  --text-display: 76px;
+  --text-display--line-height: 1.03;
+  --text-display--letter-spacing: -2.28px;
+
+  --radius-card: 8px;
+  --radius-pill: 100px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.5;
+    letter-spacing: -0.32px;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-cyan);
+  }
+  ::selection {
+    background: var(--color-cyan);
+    color: var(--color-ink);
+  }
+}
