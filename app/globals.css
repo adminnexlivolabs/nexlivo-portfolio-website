@@ -151,3 +151,8 @@ html[data-js="1"]:not([data-intro-done="true"]) .intro {
 @keyframes intro-wipe {
   to { transform: translateY(-100%); }
 }
+
+/* --- FAQ accordion --- */
+summary::-webkit-details-marker {
+  display: none;
+}
