@@ -1,0 +1,113 @@
+import { test, expect } from "@playwright/test";
+
+test.describe("intro overlay", () => {
+  test("plays, then reveals the site", async ({ page }) => {
+    await page.goto("/");
+    const intro = page.getByTestId("intro");
+    await expect(intro).toBeVisible();
+    // Plate is the ink token, matching the brand plate.
+    await expect(intro).toHaveCSS("background-color", "rgb(1, 4, 23)");
+    // It clears itself without interaction.
+    await expect(intro).toBeHidden({ timeout: 5000 });
+  });
+
+  test("is skippable with a keypress", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("intro")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("intro")).toBeHidden({ timeout: 2000 });
+  });
+
+  test("plays only once per session", async ({ page }) => {
+    await page.goto("/");
+    // Must actually have played first, or the assertions below can't
+    // distinguish "played then cleared" from "never played at all" -
+    // toBeHidden()/toHaveCount(0) both pass vacuously for an element
+    // that never existed.
+    await expect(page.getByTestId("intro")).toBeVisible();
+    await expect(page.getByTestId("intro")).toBeHidden({ timeout: 5000 });
+    await page.goto("/");
+    // Second visit in the same session: never rendered.
+    await expect(page.getByTestId("intro")).toHaveCount(0);
+  });
+
+  test("does not render at all under reduced motion", async ({ browser }) => {
+    const ctx = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    await expect(page.getByTestId("intro")).toHaveCount(0);
+    // And the page must be scrollable immediately.
+    const overflow = await page.evaluate(
+      () => getComputedStyle(document.body).overflow,
+    );
+    expect(overflow).not.toBe("hidden");
+    await ctx.close();
+  });
+
+  test("restores scrolling after the intro completes", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("intro")).toBeHidden({ timeout: 5000 });
+    const overflow = await page.evaluate(
+      () => getComputedStyle(document.body).overflow,
+    );
+    expect(overflow).not.toBe("hidden");
+  });
+
+  test("does not block the page or lock scroll with JavaScript disabled", async ({
+    browser,
+  }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    // The inline anti-flash script never ran, so data-js is never set.
+    // The plate must stay hidden by CSS regardless - it must not sit
+    // over the page waiting for JS that will never arrive.
+    await expect(page.getByTestId("intro")).toBeHidden();
+    const overflow = await page.evaluate(
+      () => getComputedStyle(document.body).overflow,
+    );
+    expect(overflow).not.toBe("hidden");
+    await ctx.close();
+  });
+
+  test("reveal-gated content is visible immediately with JavaScript disabled", async ({
+    browser,
+  }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    // The primitives-harness route is retired (Task 11); Services.tsx
+    // wraps each card in <Reveal>, which renders as a [data-reveal] div
+    // - use that production markup as the target instead.
+    await page.goto("/");
+    await expect(
+      page.locator("#services [data-reveal]").first(),
+    ).toHaveCSS("opacity", "1");
+    await ctx.close();
+  });
+
+  test("reveal-gated content becomes fully visible with JavaScript on", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("intro")).toBeHidden({ timeout: 5000 });
+    // Assert on the element that actually carries [data-reveal] itself
+    // - the wrapper div Reveal.tsx renders - not a child. Opacity does
+    // not cascade to descendants, so asserting on a child (e.g. the
+    // card heading) would read a value the hidden/revealed CSS rules
+    // never touched and pass even if the rules were broken. Services
+    // is the first section on the page to use <Reveal> (see
+    // components/sections/Services.tsx).
+    const revealed = page.locator("#services [data-reveal]").first();
+    // The services cards sit below the fold at the default viewport,
+    // so Reveal's IntersectionObserver never fires until they scroll
+    // into view - do that before waiting for the "revealed" state.
+    await revealed.scrollIntoViewIfNeeded();
+    await expect(revealed).toHaveAttribute("data-revealed", "true");
+    // This is what F1 broke: the data-js re-scope of the hidden rule
+    // must not outrank the revealed rule once data-revealed="true" is
+    // set.
+    await expect(revealed).toHaveCSS("opacity", "1");
+    await expect(revealed).toHaveCSS("transform", "none");
+  });
+});
