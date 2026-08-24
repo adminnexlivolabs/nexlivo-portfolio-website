@@ -17,6 +17,18 @@ test.describe("footer and legal pages", () => {
     await expect(page).toHaveURL(/\/terms$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Terms & Conditions");
     expect((await page.locator("article section").count())).toBeGreaterThan(3);
+
+    // Tripwire against silent corruption: a section count and a "not
+    // Lorem ipsum" check would both pass even if the extraction script
+    // paraphrased or garbled the actual legal text. Assert a distinctive,
+    // verbatim phrase from the Governing Law and Disputes section (source:
+    // ~/Downloads/Nexlivo_Legal_Pack.md, "## 1.20 Governing Law and
+    // Disputes") so a future wording drift fails this test, not just a
+    // human proofread.
+    const termsText = await page.locator("article").innerText();
+    expect(termsText).toContain(
+      "the MSA below uses a **lawyer-review placeholder** rather than making a final arbitration election.",
+    );
   });
 
   test("privacy page renders with real prose", async ({ page }) => {
@@ -26,6 +38,14 @@ test.describe("footer and legal pages", () => {
     expect(text.length).toBeGreaterThan(500);
     expect(text).not.toContain("TODO");
     expect(text).not.toContain("Lorem ipsum");
+
+    // Same tripwire as the terms test above, for the Privacy Policy: a
+    // distinctive verbatim phrase from the Data Retention section (source:
+    // "## 2.9 Data Retention") that a paraphrase or corrupted extraction
+    // would not reproduce exactly.
+    expect(text).toContain(
+      "Client application data is subject to the applicable client contract, DPA, instructions, backup practices, and legal requirements.",
+    );
   });
 
   test("legal pages keep line length readable", async ({ page }) => {

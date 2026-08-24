@@ -94,7 +94,7 @@ export const terms: LegalDoc = {
     },
     {
       "heading": "Contact",
-      "body": "Legal enquiries: `[LEGAL EMAIL]`  \nGeneral enquiries: `[GENERAL EMAIL]`  \nLocation: Hyderabad, Telangana, India\n\n---"
+      "body": "Legal enquiries: `[LEGAL EMAIL]`  \nGeneral enquiries: `[GENERAL EMAIL]`  \nLocation: Hyderabad, Telangana, India"
     }
   ]
 };
@@ -161,7 +161,7 @@ export const privacy: LegalDoc = {
     },
     {
       "heading": "Contact",
-      "body": "Privacy Contact: `[PRIVACY EMAIL]`  \nLegal Contact: `[LEGAL EMAIL]`  \nLocation: Hyderabad, Telangana, India\n\n---"
+      "body": "Privacy Contact: `[PRIVACY EMAIL]`  \nLegal Contact: `[LEGAL EMAIL]`  \nLocation: Hyderabad, Telangana, India"
     }
   ]
 };
