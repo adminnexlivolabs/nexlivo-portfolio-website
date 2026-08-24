@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { content } from "../../lib/content";
 
 test("page renders with the token system applied", async ({ page }) => {
   await page.goto("/");
   const h1 = page.getByRole("heading", { level: 1 });
-  await expect(h1).toHaveText("Nexlivo Labs");
+  await expect(h1).toHaveText(content.hero.headline);
 
   // Body must use the ink token, not a default black.
   const bodyColor = await page.evaluate(

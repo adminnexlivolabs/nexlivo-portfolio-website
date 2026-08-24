@@ -14,9 +14,19 @@ export function Nav() {
   // button explicitly. Relying on "the toggle was just clicked so it's
   // already focused" doesn't hold in Safari, which doesn't focus buttons
   // on click, so this is called from all four sites rather than assumed.
+  //
+  // The drawer links navigate to in-page anchors (#services, #process,
+  // and eventually #capabilities/#faq). A same-document fragment
+  // navigation's default action runs synchronously right after this
+  // handler returns, and per the HTML fragment-navigation algorithm it
+  // will itself attempt to move focus based on the target element - since
+  // section targets aren't natively focusable, that clears focus entirely
+  // and stomps the focus() call below. Deferring to the next animation
+  // frame lets that browser-driven focus change happen first, so ours is
+  // the one that wins.
   const closeDrawer = useCallback(() => {
     setOpen(false);
-    triggerRef.current?.focus();
+    requestAnimationFrame(() => triggerRef.current?.focus());
   }, []);
 
   // Focus trap + Escape handling while the drawer is open.
