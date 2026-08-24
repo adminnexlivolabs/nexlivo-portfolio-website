@@ -20,15 +20,37 @@ const inter = Inter({
   display: "swap",
 });
 
+const title = "Nexlivo Labs — Web and mobile product studio";
+const description =
+  "Nexlivo Labs designs and builds web and mobile products for businesses and enterprises, and keeps them running after launch.";
+
 export const metadata: Metadata = {
-  title: "Nexlivo Labs — Web and mobile product studio",
-  description:
-    "Nexlivo Labs designs and builds web and mobile products for businesses and enterprises, and keeps them running after launch.",
+  title,
+  description,
+  applicationName: "Nexlivo Labs",
+  // No bare phone/email/date strings on the page should be silently
+  // re-linked or re-styled by the browser - the phone and email links
+  // in Footer/Contact are already deliberate <a> elements.
+  formatDetection: { telephone: false, email: false, address: false },
+  robots: { index: true, follow: true },
+  openGraph: {
+    title,
+    description,
+    siteName: "Nexlivo Labs",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
+    title,
+    description,
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#010417",
 };
 
 export default function RootLayout({

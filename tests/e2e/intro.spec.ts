@@ -75,26 +75,34 @@ test.describe("intro overlay", () => {
   }) => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
-    await page.goto("/primitives-harness");
-    await expect(page.getByTestId("reveal-target")).toHaveCSS(
-      "opacity",
-      "1",
-    );
+    // The primitives-harness route is retired (Task 11); Services.tsx
+    // wraps each card in <Reveal>, which renders as a [data-reveal] div
+    // - use that production markup as the target instead.
+    await page.goto("/");
+    await expect(
+      page.locator("#services [data-reveal]").first(),
+    ).toHaveCSS("opacity", "1");
     await ctx.close();
   });
 
   test("reveal-gated content becomes fully visible with JavaScript on", async ({
     page,
   }) => {
-    await page.goto("/primitives-harness");
+    await page.goto("/");
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("intro")).toBeHidden({ timeout: 5000 });
     // Assert on the element that actually carries [data-reveal] itself
     // - the wrapper div Reveal.tsx renders - not a child. Opacity does
     // not cascade to descendants, so asserting on a child (e.g. the
-    // reveal-target <p>) would read a value the hidden/revealed CSS
-    // rules never touched and pass even if the rules were broken.
-    const revealed = page.locator("[data-reveal]").first();
-    // Wait for Reveal's IntersectionObserver to mark it revealed before
-    // asserting the "revealed" visual state.
+    // card heading) would read a value the hidden/revealed CSS rules
+    // never touched and pass even if the rules were broken. Services
+    // is the first section on the page to use <Reveal> (see
+    // components/sections/Services.tsx).
+    const revealed = page.locator("#services [data-reveal]").first();
+    // The services cards sit below the fold at the default viewport,
+    // so Reveal's IntersectionObserver never fires until they scroll
+    // into view - do that before waiting for the "revealed" state.
+    await revealed.scrollIntoViewIfNeeded();
     await expect(revealed).toHaveAttribute("data-revealed", "true");
     // This is what F1 broke: the data-js re-scope of the hidden rule
     // must not outrank the revealed rule once data-revealed="true" is

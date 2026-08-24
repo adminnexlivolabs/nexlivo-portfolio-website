@@ -10,7 +10,11 @@ type Status = "idle" | "sending" | "sent" | "error";
 const field =
   "mt-2 w-full min-h-[44px] rounded-card border border-ash bg-canvas px-4 py-3 " +
   "text-body text-ink placeholder:text-fog/60 transition-colors duration-150 " +
-  "focus:border-cyan focus:outline-none focus:ring-[3px] focus:ring-cyan/10";
+  // No box-shadow ring here (site-wide rule): the visible focus ring comes
+  // from the global :focus-visible { outline } rule in globals.css, same
+  // as every other interactive element. Only the border-color affordance
+  // is field-specific.
+  "focus:border-cyan";
 const label = "block text-caption font-medium text-ink";
 
 export function Contact() {
