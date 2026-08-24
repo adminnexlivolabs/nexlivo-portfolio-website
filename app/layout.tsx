@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Inter } from "next/font/google";
 import { IntroOverlay } from "@/components/intro/IntroOverlay";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { Nav } from "@/components/layout/Nav";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -48,7 +50,9 @@ export default function RootLayout({
       </head>
       <body>
         <IntroOverlay />
-        {children}
+        <AnnouncementBar />
+        <Nav />
+        <main id="top">{children}</main>
       </body>
     </html>
   );
