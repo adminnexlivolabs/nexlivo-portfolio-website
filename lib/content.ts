@@ -1,18 +1,33 @@
+// Chrome-level section links (announcement / nav / footer) are written ROOTED
+// ("/#services", not "#services") because those three components are mounted in
+// app/layout.tsx and therefore render on EVERY route, including /terms and
+// /privacy. A bare "#services" resolves against the *current* document, so from
+// /terms it would only rewrite the fragment and leave the visitor stranded on
+// the legal page with no way home. The leading "/" makes each one resolve to the
+// homepage section from anywhere; on the homepage itself the browser still
+// treats it as a same-document fragment navigation, so in-page scrolling is
+// unchanged.
+//
+// `hero` below deliberately keeps bare fragments: it renders only inside
+// app/page.tsx, so it can never be reached from another route, and a
+// document-relative fragment preserves any query string (utm_* and friends)
+// that a rooted href would drop.
 export const content = {
   announcement: {
     text: "Nexlivo Labs is taking on new projects this quarter.",
     linkLabel: "Get in touch",
-    href: "#contact",
+    href: "/#contact",
   },
 
   nav: {
+    home: { label: "Nexlivo Labs home", href: "/" },
     links: [
-      { label: "Services", href: "#services" },
-      { label: "Process", href: "#process" },
-      { label: "Capabilities", href: "#capabilities" },
-      { label: "FAQ", href: "#faq" },
+      { label: "Services", href: "/#services" },
+      { label: "Process", href: "/#process" },
+      { label: "Capabilities", href: "/#capabilities" },
+      { label: "FAQ", href: "/#faq" },
     ],
-    cta: { label: "Contact", href: "#contact" },
+    cta: { label: "Contact", href: "/#contact" },
   },
 
   hero: {
@@ -140,6 +155,11 @@ export const content = {
   contact: {
     heading: "Tell us what you are building.",
     subtext: "We reply within one business day.",
+    // Announced in the form's role="status" region when client-side validation
+    // rejects a submission. The inline per-field messages are correct but sit
+    // away from where focus and screen-reader attention are (the submit
+    // button), so without this a failed submit is silent.
+    validationSummary: "Please fix the highlighted fields below.",
     email: "admin.nexlivolabs@gmail.com",
     phone: "+91 9704069431",
     phoneHref: "tel:+919704069431",
@@ -151,19 +171,19 @@ export const content = {
       {
         title: "Services",
         links: [
-          { label: "Web Applications", href: "#services" },
-          { label: "Mobile Applications", href: "#services" },
-          { label: "Product Design", href: "#services" },
-          { label: "Cloud & DevOps", href: "#services" },
+          { label: "Web Applications", href: "/#services" },
+          { label: "Mobile Applications", href: "/#services" },
+          { label: "Product Design", href: "/#services" },
+          { label: "Cloud & DevOps", href: "/#services" },
         ],
       },
       {
         title: "Company",
         links: [
-          { label: "About", href: "#about" },
-          { label: "Process", href: "#process" },
-          { label: "Capabilities", href: "#capabilities" },
-          { label: "FAQ", href: "#faq" },
+          { label: "About", href: "/#about" },
+          { label: "Process", href: "/#process" },
+          { label: "Capabilities", href: "/#capabilities" },
+          { label: "FAQ", href: "/#faq" },
         ],
       },
       {

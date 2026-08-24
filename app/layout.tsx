@@ -24,7 +24,26 @@ const title = "Nexlivo Labs — Web and mobile product studio";
 const description =
   "Nexlivo Labs designs and builds web and mobile products for businesses and enterprises, and keeps them running after launch.";
 
+// Social platforms fetch og:image over the public internet, so the tag has to
+// carry an ABSOLUTE URL. Next builds one by resolving the relative path below
+// against metadataBase; without it, Next falls back to localhost and warns at
+// build time. The production origin is not fixed yet, so it is read from the
+// environment (set NEXT_PUBLIC_SITE_URL on the deploy target) and only falls
+// back to localhost for local development.
+// `||`, not `??`: an env file that declares the key but leaves it blank yields
+// "", which would make `new URL("")` throw at build time.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+// public/og-image.png, 1200x630. Regenerate with scripts/make-og-image.mjs.
+const ogImage = {
+  url: "/og-image.png",
+  width: 1200,
+  height: 630,
+  alt: "Nexlivo Labs — we design and build software that businesses run on.",
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title,
   description,
   applicationName: "Nexlivo Labs",
@@ -39,11 +58,16 @@ export const metadata: Metadata = {
     siteName: "Nexlivo Labs",
     type: "website",
     locale: "en_US",
+    url: "/",
+    images: [ogImage],
   },
   twitter: {
-    card: "summary",
+    // summary_large_image, not summary: the card is a 1.91:1 banner, and
+    // "summary" would crop it to a small square thumbnail.
+    card: "summary_large_image",
     title,
     description,
+    images: [ogImage],
   },
 };
 

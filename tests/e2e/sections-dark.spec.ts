@@ -41,14 +41,66 @@ test.describe("capabilities and about", () => {
   });
 
   test("focus rings on the dark band are cyan, not ink", async ({ page }) => {
-    const color = await page.evaluate(() => {
-      const el = document.querySelector("#capabilities a, #capabilities button");
-      if (!el) return "no-focusable";
-      (el as HTMLElement).focus();
-      return getComputedStyle(el).outlineColor;
+    // The surface-dependent focus ring is a non-negotiable of the spec, and
+    // globals.css implements it as a DESCENDANT rule:
+    //
+    //     :focus-visible          { outline: 2px solid var(--color-ink); }
+    //     .on-dark :focus-visible { outline-color: var(--color-cyan); }
+    //
+    // Capabilities is the only dark surface and it currently contains no
+    // focusable element, so a query for one there returns null. Rather than
+    // adding a decorative link to the real section just to give the test
+    // something to click, this injects a throwaway probe anchor into the real
+    // `.on-dark` section and a matching control into a light one, focuses
+    // each, and compares the computed ring. That exercises the actual CSS
+    // contract - including the `.on-dark` class really being on the section -
+    // and cannot silently no-op the way the old query could.
+    await expect(page.locator("#capabilities")).toHaveClass(/\bon-dark\b/);
+
+    const result = await page.evaluate(() => {
+      const probe = (hostSelector: string) => {
+        const host = document.querySelector(hostSelector);
+        if (!host) throw new Error(`missing host ${hostSelector}`);
+        const a = document.createElement("a");
+        a.href = "#";
+        a.dataset.focusProbe = "1";
+        a.textContent = "focus probe";
+        host.appendChild(a);
+        a.focus();
+        const cs = getComputedStyle(a);
+        const read = {
+          // Asserted below: if the browser did not treat this as a
+          // focus-visible match, the outline values would be meaningless
+          // defaults and the test must fail rather than pass vacuously.
+          focusVisible: a.matches(":focus-visible"),
+          insideOnDark: Boolean(a.closest(".on-dark")),
+          outlineColor: cs.outlineColor,
+          outlineStyle: cs.outlineStyle,
+          outlineWidth: cs.outlineWidth,
+        };
+        a.blur();
+        a.remove();
+        return read;
+      };
+      // #capabilities carries .on-dark; #services is a plain light section.
+      return { dark: probe("#capabilities"), light: probe("#services") };
     });
-    if (color !== "no-focusable") {
-      expect(color).toBe("rgb(0, 196, 204)");
+
+    expect(result.dark.focusVisible).toBe(true);
+    expect(result.light.focusVisible).toBe(true);
+    expect(result.dark.insideOnDark).toBe(true);
+    expect(result.light.insideOnDark).toBe(false);
+
+    // Dark surface -> cyan ring. Light surface -> ink ring. Same width and
+    // style on both, so only the colour is surface-dependent.
+    expect(result.dark.outlineColor).toBe("rgb(0, 196, 204)");
+    expect(result.light.outlineColor).toBe("rgb(1, 4, 23)");
+    for (const r of [result.dark, result.light]) {
+      expect(r.outlineStyle).toBe("solid");
+      expect(r.outlineWidth).toBe("2px");
     }
+
+    // The probes must not outlive the assertion.
+    await expect(page.locator("[data-focus-probe]")).toHaveCount(0);
   });
 });

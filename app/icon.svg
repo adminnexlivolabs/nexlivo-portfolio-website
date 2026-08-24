@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Nexlivo Labs">
+  <!-- Flat ink plate, cyan N monogram. No gradients, strokes, or shadows,
+       matching the site's flat aesthetic. The N is a filled path rather than
+       an SVG <text> node so it renders identically everywhere - a favicon is
+       drawn outside the page, where the Montserrat webfont is not available. -->
+  <rect width="64" height="64" fill="#010417"/>
+  <path d="M18 18 H26 L38 38 V18 H46 V46 H38 L26 26 V46 H18 Z" fill="#00c4cc"/>
+</svg>

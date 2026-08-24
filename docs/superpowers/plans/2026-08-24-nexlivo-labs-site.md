@@ -2506,59 +2506,14 @@ no wording can drift:
 
 ```bash
 cd ~/nexlivo-labs
-python3 - <<'PY'
-import json, re, pathlib
-
-src = pathlib.Path.home() / "Downloads" / "Nexlivo_Legal_Pack.md"
-text = src.read_text(encoding="utf-8")
-lines = text.splitlines()
-
-# Locate the two top-level (`# `) parts we care about.
-tops = [(i, l[2:].strip()) for i, l in enumerate(lines) if l.startswith("# ")]
-def bounds(pred):
-    for idx, (i, title) in enumerate(tops):
-        if pred(title.lower()):
-            end = tops[idx + 1][0] if idx + 1 < len(tops) else len(lines)
-            return i, end
-    raise SystemExit(f"Could not locate part: {pred}")
-
-def collect(start, end):
-    """Return [{heading, body}] for each `## ` subsection in the range."""
-    out, heading, buf = [], None, []
-    for line in lines[start:end]:
-        if line.startswith("## "):
-            if heading:
-                out.append({"heading": heading, "body": "\n".join(buf).strip()})
-            heading, buf = re.sub(r"^\d+\.\d+\s*", "", line[3:].strip()), []
-        elif heading is not None:
-            buf.append(line)
-    if heading:
-        out.append({"heading": heading, "body": "\n".join(buf).strip()})
-    return [s for s in out if s["body"]]
-
-ts, te = bounds(lambda t: "terms" in t)
-ps, pe = bounds(lambda t: "privacy" in t)
-terms, privacy = collect(ts, te), collect(ps, pe)
-
-print(f"terms: {len(terms)} sections, privacy: {len(privacy)} sections")
-
-body = (
-    "// GENERATED from Nexlivo_Legal_Pack.md — do not hand-edit the prose.\n"
-    "// Regenerate by re-running the extraction script in the implementation plan.\n\n"
-    "type LegalSection = { heading: string; body: string };\n"
-    "type LegalDoc = { title: string; updated: string; sections: LegalSection[] };\n\n"
-    "export const terms: LegalDoc = "
-    + json.dumps({"title": "Terms & Conditions", "updated": "24 August 2026",
-                  "sections": terms}, indent=2, ensure_ascii=False)
-    + ";\n\nexport const privacy: LegalDoc = "
-    + json.dumps({"title": "Privacy Policy", "updated": "24 August 2026",
-                  "sections": privacy}, indent=2, ensure_ascii=False)
-    + ";\n"
-)
-pathlib.Path("lib/legal.ts").write_text(body, encoding="utf-8")
-print("wrote lib/legal.ts")
-PY
+python3 scripts/extract-legal.py
 ```
+
+> **Note (final review, C1/I1 fix wave):** the extraction script used to be
+> inlined here as a heredoc. It now lives as a tracked, runnable file at
+> `scripts/extract-legal.py`, which is also what the generated `lib/legal.ts`
+> banner points at. Edit and re-run that file — this doc is no longer a copy
+> of it.
 
 Verify the output: both counts must be greater than 5, and `lib/legal.ts` must
 contain no `…`, `TODO`, or `Lorem`. If the script reports "Could not locate

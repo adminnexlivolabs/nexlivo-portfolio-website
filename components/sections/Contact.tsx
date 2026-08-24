@@ -7,6 +7,12 @@ import { contactSchema, PROJECT_TYPES } from "@/lib/contact-schema";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
+// Visual/DOM order of the fields. Zod reports issues in schema order, which
+// need not match what the user sees, so "the first field with an error" is
+// resolved against this list rather than against the issue list or the
+// insertion order of the errors object.
+const FIELD_ORDER = ["name", "email", "company", "projectType", "message"] as const;
+
 const field =
   "mt-2 w-full min-h-[44px] rounded-card border border-ash bg-canvas px-4 py-3 " +
   "text-body text-ink placeholder:text-fog/60 transition-colors duration-150 " +
@@ -31,7 +37,8 @@ export function Contact() {
     // used to decide whether to show inline field errors and to block
     // submission on invalid input; its *parsed* result (which Zod strips
     // unknown keys, including `website`, from) is never sent anywhere.
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
     const parsed = contactSchema.safeParse(data);
 
     if (!parsed.success) {
@@ -42,6 +49,16 @@ export function Contact() {
       }
       setErrors(next);
       setStatus("error");
+      // Announce the failure and move to the problem. Without both of these a
+      // failed submit is invisible to anyone not looking at the fields: the
+      // live region stays empty so nothing is spoken, and focus stays parked
+      // on the submit button, above/below the inline messages.
+      setFormError(content.contact.validationSummary);
+      const firstInvalid = FIELD_ORDER.find((key) => next[key]);
+      if (firstInvalid) {
+        const el = form.elements.namedItem(firstInvalid);
+        if (el instanceof HTMLElement) el.focus();
+      }
       return;
     }
 

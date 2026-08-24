@@ -40,6 +40,53 @@ test.describe("faq and contact", () => {
     await expect(page.locator("#email-error")).toBeVisible();
   });
 
+  test("a failed submission is announced and moves focus to the first bad field", async ({
+    page,
+  }) => {
+    await page.getByLabel("Email").fill("nope");
+    await page.getByLabel("What are you building?").fill("short");
+    await page.getByRole("button", { name: "Send enquiry" }).click();
+
+    // The role="status" region must actually say something - inline field
+    // errors alone are invisible to a screen-reader user whose focus is on
+    // the submit button.
+    const live = page.getByTestId("form-error");
+    await expect(live).toBeVisible();
+    await expect(live).toContainText(content.contact.validationSummary);
+
+    // ...and focus lands on the first field in DOM order that has an error
+    // (name is empty, so it wins over email and message).
+    await expect(page.locator("#name")).toBeFocused();
+  });
+
+  test("a valid submission with no mailer configured shows the email fallback", async ({
+    page,
+  }) => {
+    // Spec 10.6: the 503 "mailer not configured" path must surface the
+    // fallback-to-email message to the *user*, not just in the API response.
+    // This drives the real rendered form through a real submit; the dev
+    // environment deliberately has no RESEND_API_KEY (see .env.example), so
+    // /api/contact answers 503 and nothing is actually mailed. The message
+    // below identifies the submission in the unlikely event a mailer IS
+    // configured locally - in which case this test fails loudly rather than
+    // silently passing.
+    await page.getByLabel("Name").fill("E2E Test");
+    await page.getByLabel("Email").fill("e2e@example.com");
+    await page.getByLabel("What are you building?").fill(
+      "Automated end-to-end test submission — please ignore.",
+    );
+    await page.getByRole("button", { name: "Send enquiry" }).click();
+
+    const live = page.getByTestId("form-error");
+    await expect(live).toBeVisible();
+    // The API's own 503 copy, so this cannot be satisfied by the
+    // client-side validation branch.
+    await expect(live).toContainText("Our enquiry form is not connected yet");
+    // And the fallback address the user is meant to reach for instead.
+    await expect(live).toContainText(content.contact.email);
+    await expect(page.getByTestId("form-success")).toHaveCount(0);
+  });
+
   test("contact details are real tel: and mailto: links", async ({ page }) => {
     const contact = page.locator("#contact");
     await expect(

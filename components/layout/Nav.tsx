@@ -69,7 +69,13 @@ export function Nav() {
         aria-label="Primary"
         className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 md:px-6 lg:px-8"
       >
-        <a href="#top" className="text-ink" aria-label="Nexlivo Labs home">
+        {/* Rooted, not "#top": the header renders on /terms and /privacy too,
+            where a bare fragment would leave the visitor on the legal page. */}
+        <a
+          href={content.nav.home.href}
+          className="text-ink"
+          aria-label={content.nav.home.label}
+        >
           <Logo />
         </a>
 

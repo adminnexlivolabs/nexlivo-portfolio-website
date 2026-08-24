@@ -1,5 +1,5 @@
 // GENERATED from Nexlivo_Legal_Pack.md — do not hand-edit the prose.
-// Regenerate by re-running the extraction script in the implementation plan.
+// Regenerate by running: python3 scripts/extract-legal.py
 
 type LegalSection = { heading: string; body: string };
 type LegalDoc = { title: string; updated: string; sections: LegalSection[] };
@@ -42,15 +42,15 @@ export const terms: LegalDoc = {
     },
     {
       "heading": "Fees and Payment",
-      "body": "Unless a specific SOW states otherwise, Nexlivo's standard commercial structure is:\n\n- **50% advance payment** before or at project commencement;\n- **30% milestone payment** upon the agreed milestone; and\n- **20% final payment** upon delivery or completion of the agreed final acceptance stage.\n\nApplicable taxes, duties, transaction charges, third-party fees, cloud charges, app-store charges, licensing costs, and other agreed expenses are additional unless expressly included in the quotation.\n\nNexlivo may pause work where an undisputed invoice is overdue. Any resulting schedule impact may be reflected in the project timeline."
+      "body": "Unless a specific SOW states otherwise, Nexlivo's standard commercial structure is:\n\n- 50% advance payment before or at project commencement;\n- 30% milestone payment upon the agreed milestone; and\n- 20% final payment upon delivery or completion of the agreed final acceptance stage.\n\nApplicable taxes, duties, transaction charges, third-party fees, cloud charges, app-store charges, licensing costs, and other agreed expenses are additional unless expressly included in the quotation.\n\nNexlivo may pause work where an undisputed invoice is overdue. Any resulting schedule impact may be reflected in the project timeline."
     },
     {
       "heading": "Changes to Scope",
-      "body": "A project is limited to the scope stated in the signed SOW or approved proposal.\n\nRequests that materially alter the agreed requirements, architecture, number of screens/features, integrations, platforms, infrastructure, reporting, user roles, regulatory requirements, or other deliverables may be treated as a **Change Request**.\n\nA Change Request may result in:\n\n- additional fees;\n- revised deadlines;\n- revised testing requirements;\n- revised infrastructure requirements; and/or\n- amendment of acceptance criteria.\n\nNexlivo is not required to implement material out-of-scope work without written approval of the corresponding commercial and technical impact."
+      "body": "A project is limited to the scope stated in the signed SOW or approved proposal.\n\nRequests that materially alter the agreed requirements, architecture, number of screens/features, integrations, platforms, infrastructure, reporting, user roles, regulatory requirements, or other deliverables may be treated as a Change Request.\n\nA Change Request may result in:\n\n- additional fees;\n- revised deadlines;\n- revised testing requirements;\n- revised infrastructure requirements; and/or\n- amendment of acceptance criteria.\n\nNexlivo is not required to implement material out-of-scope work without written approval of the corresponding commercial and technical impact."
     },
     {
       "heading": "Intellectual Property",
-      "body": "Ownership of project deliverables is governed by the applicable MSA, SOW, and Intellectual Property Terms.\n\nIn general, Nexlivo intends to use a **hybrid ownership model**:\n\n- client-specific bespoke deliverables may be assigned or licensed to the client as agreed after applicable fees are paid in full;\n- Nexlivo retains ownership of its pre-existing software, frameworks, libraries, templates, utilities, development tools, generic components, know-how, methodologies, reusable code, and other background intellectual property; and\n- third-party and open-source components remain subject to their respective licences."
+      "body": "Ownership of project deliverables is governed by the applicable MSA, SOW, and Intellectual Property Terms.\n\nIn general, Nexlivo intends to use a hybrid ownership model:\n\n- client-specific bespoke deliverables may be assigned or licensed to the client as agreed after applicable fees are paid in full;\n- Nexlivo retains ownership of its pre-existing software, frameworks, libraries, templates, utilities, development tools, generic components, know-how, methodologies, reusable code, and other background intellectual property; and\n- third-party and open-source components remain subject to their respective licences."
     },
     {
       "heading": "Confidentiality",
@@ -86,7 +86,7 @@ export const terms: LegalDoc = {
     },
     {
       "heading": "Governing Law and Disputes",
-      "body": "These public website Terms are intended to be governed by the laws of India, subject to applicable mandatory law.\n\nFor client agreements, Nexlivo should use a separately negotiated dispute-resolution provision identifying governing law, venue, arbitration (if selected), language, and seat/place of arbitration.\n\nBecause the owner has not yet selected a final dispute-resolution structure, the MSA below uses a **lawyer-review placeholder** rather than making a final arbitration election."
+      "body": "These public website Terms are intended to be governed by the laws of India, subject to applicable mandatory law.\n\nFor client agreements, Nexlivo should use a separately negotiated dispute-resolution provision identifying governing law, venue, arbitration (if selected), language, and seat/place of arbitration.\n\nBecause the owner has not yet selected a final dispute-resolution structure, the MSA below uses a lawyer-review placeholder rather than making a final arbitration election."
     },
     {
       "heading": "Changes to These Terms",
@@ -94,7 +94,7 @@ export const terms: LegalDoc = {
     },
     {
       "heading": "Contact",
-      "body": "Legal enquiries: `[LEGAL EMAIL]`  \nGeneral enquiries: `[GENERAL EMAIL]`  \nLocation: Hyderabad, Telangana, India"
+      "body": "Legal enquiries: [LEGAL EMAIL]  \nGeneral enquiries: [GENERAL EMAIL]  \nLocation: Hyderabad, Telangana, India"
     }
   ]
 };
@@ -105,11 +105,11 @@ export const privacy: LegalDoc = {
   "sections": [
     {
       "heading": "Scope",
-      "body": "This Privacy Policy describes how Nexlivo collects, uses, stores, discloses, and otherwise processes personal information in connection with the Nexlivo website, enquiries, marketing communications, and Nexlivo's own business operations.\n\nThis Policy is **not automatically the privacy notice for a client's application** that Nexlivo develops. When Nexlivo develops or hosts software for a client and processes personal data on the client's documented instructions, the client's privacy notice and the parties' contractual data-protection arrangements generally govern that client application. Nexlivo's DPA addresses its role as a service provider/processor where applicable."
+      "body": "This Privacy Policy describes how Nexlivo collects, uses, stores, discloses, and otherwise processes personal information in connection with the Nexlivo website, enquiries, marketing communications, and Nexlivo's own business operations.\n\nThis Policy is not automatically the privacy notice for a client's application that Nexlivo develops. When Nexlivo develops or hosts software for a client and processes personal data on the client's documented instructions, the client's privacy notice and the parties' contractual data-protection arrangements generally govern that client application. Nexlivo's DPA addresses its role as a service provider/processor where applicable."
     },
     {
       "heading": "Information We May Collect",
-      "body": "Depending on how you interact with Nexlivo, we may collect:\n\n### Information you provide\n\n- name;\n- business/organisation name;\n- role or job title;\n- email address;\n- telephone number;\n- project requirements;\n- messages and correspondence;\n- billing and transaction information where relevant;\n- information contained in documents or materials voluntarily provided to us; and\n- other information you choose to provide.\n\n### Automatically collected information\n\nDepending on the website configuration, we may collect:\n\n- IP address;\n- browser and device information;\n- operating system;\n- approximate location derived from technical information;\n- referral and interaction information;\n- website logs;\n- cookie and similar technology information; and\n- security and diagnostic information.\n\nWe will update this Policy if our actual data collection materially changes."
+      "body": "Depending on how you interact with Nexlivo, we may collect:\n\nInformation you provide\n\n- name;\n- business/organisation name;\n- role or job title;\n- email address;\n- telephone number;\n- project requirements;\n- messages and correspondence;\n- billing and transaction information where relevant;\n- information contained in documents or materials voluntarily provided to us; and\n- other information you choose to provide.\n\nAutomatically collected information\n\nDepending on the website configuration, we may collect:\n\n- IP address;\n- browser and device information;\n- operating system;\n- approximate location derived from technical information;\n- referral and interaction information;\n- website logs;\n- cookie and similar technology information; and\n- security and diagnostic information.\n\nWe will update this Policy if our actual data collection materially changes."
     },
     {
       "heading": "Purposes of Processing",
@@ -145,7 +145,7 @@ export const privacy: LegalDoc = {
     },
     {
       "heading": "Data Subject / Individual Rights",
-      "body": "Depending on the applicable law and the circumstances, individuals may have rights relating to their personal information, such as:\n\n- requesting access to relevant information;\n- requesting correction of inaccurate information;\n- requesting deletion where applicable;\n- withdrawing consent where consent is the basis;\n- objecting to or restricting certain processing;\n- requesting portability where applicable; and\n- lodging a complaint with the relevant authority.\n\nRights and exceptions vary by jurisdiction.\n\nRequests may be sent to `[PRIVACY EMAIL]`.\n\nNexlivo may need to verify identity before fulfilling a request and may involve the relevant client where Nexlivo is acting as a processor/service provider rather than as the entity determining the purposes of processing."
+      "body": "Depending on the applicable law and the circumstances, individuals may have rights relating to their personal information, such as:\n\n- requesting access to relevant information;\n- requesting correction of inaccurate information;\n- requesting deletion where applicable;\n- withdrawing consent where consent is the basis;\n- objecting to or restricting certain processing;\n- requesting portability where applicable; and\n- lodging a complaint with the relevant authority.\n\nRights and exceptions vary by jurisdiction.\n\nRequests may be sent to [PRIVACY EMAIL].\n\nNexlivo may need to verify identity before fulfilling a request and may involve the relevant client where Nexlivo is acting as a processor/service provider rather than as the entity determining the purposes of processing."
     },
     {
       "heading": "Children's Data",
@@ -161,7 +161,7 @@ export const privacy: LegalDoc = {
     },
     {
       "heading": "Contact",
-      "body": "Privacy Contact: `[PRIVACY EMAIL]`  \nLegal Contact: `[LEGAL EMAIL]`  \nLocation: Hyderabad, Telangana, India"
+      "body": "Privacy Contact: [PRIVACY EMAIL]  \nLegal Contact: [LEGAL EMAIL]  \nLocation: Hyderabad, Telangana, India"
     }
   ]
 };
