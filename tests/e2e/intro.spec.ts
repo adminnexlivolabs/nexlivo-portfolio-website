@@ -87,12 +87,19 @@ test.describe("intro overlay", () => {
     page,
   }) => {
     await page.goto("/primitives-harness");
+    // Assert on the element that actually carries [data-reveal] itself
+    // - the wrapper div Reveal.tsx renders - not a child. Opacity does
+    // not cascade to descendants, so asserting on a child (e.g. the
+    // reveal-target <p>) would read a value the hidden/revealed CSS
+    // rules never touched and pass even if the rules were broken.
+    const revealed = page.locator("[data-reveal]").first();
+    // Wait for Reveal's IntersectionObserver to mark it revealed before
+    // asserting the "revealed" visual state.
+    await expect(revealed).toHaveAttribute("data-revealed", "true");
     // This is what F1 broke: the data-js re-scope of the hidden rule
     // must not outrank the revealed rule once data-revealed="true" is
-    // set by Reveal's IntersectionObserver.
-    await expect(page.getByTestId("reveal-target")).toHaveCSS(
-      "opacity",
-      "1",
-    );
+    // set.
+    await expect(revealed).toHaveCSS("opacity", "1");
+    await expect(revealed).toHaveCSS("transform", "none");
   });
 });
