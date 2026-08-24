@@ -77,7 +77,9 @@
     transform: translateY(8px);
     transition: opacity 400ms ease-out, transform 400ms ease-out;
   }
-  [data-reveal][data-revealed="true"] {
+  /* Specificity must exceed the hidden rule above (0,3,0 > 0,2,1) or a
+     revealed element stays invisible forever with JS on. */
+  html[data-js="1"] [data-reveal][data-revealed="true"] {
     opacity: 1;
     transform: none;
   }
@@ -89,7 +91,11 @@
   inset: 0;
   z-index: 200;
   background: var(--color-ink);
-  display: grid;
+  /* Hidden by default so a no-JS visitor (data-js never set, because the
+     inline head script never ran) never has the plate parked over the
+     page or the body scroll locked. Only shown once JS has confirmed
+     it's driving the intro. */
+  display: none;
   place-items: center;
 }
 
@@ -103,9 +109,8 @@
   transform: translateY(110%);
 }
 
-/* Anti-flash + reduced motion: never show the plate. */
-html[data-intro-done="true"] .intro {
-  display: none;
+html[data-js="1"]:not([data-intro-done="true"]) .intro {
+  display: grid;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -115,7 +120,7 @@ html[data-intro-done="true"] .intro {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-intro-done="true"]) body {
+  html[data-js="1"]:not([data-intro-done="true"]) body {
     overflow: hidden;
   }
   .intro__word {

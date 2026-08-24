@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
+import { Reveal } from "@/components/ui/Reveal";
 
 export default function Harness() {
   return (
@@ -15,6 +16,9 @@ export default function Harness() {
         <Card variant="light" testId="card-light">
           Light card
         </Card>
+        <Reveal>
+          <p data-testid="reveal-target">Revealed content</p>
+        </Reveal>
       </div>
     </Section>
   );

@@ -4,10 +4,30 @@ import { useEffect, useRef, useState } from "react";
 
 const SESSION_KEY = "nexlivo:intro-seen";
 
+// sessionStorage access can throw (SecurityError) when a browser has site
+// data / storage blocked. These wrappers keep that from ever crashing a
+// render or an effect — the worst case is the intro simply plays again.
+function sessionSeen(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markSessionSeen(): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    // Ignore: storage unavailable.
+  }
+}
+
 export function IntroOverlay() {
   const [gone, setGone] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const leaving = useRef(false);
+  const safetyTimer = useRef<number | null>(null);
   // Snapshot the "already seen / reduced motion" decision once, at render
   // time, before any effect can mutate sessionStorage. Reading this fresh
   // from inside the effect body would break under React's development
@@ -20,14 +40,22 @@ export function IntroOverlay() {
   if (skip.current === null) {
     skip.current =
       typeof window !== "undefined" &&
-      (sessionStorage.getItem(SESSION_KEY) === "1" ||
+      (sessionSeen() ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }
 
   useEffect(() => {
     const root = document.documentElement;
 
+    const clearSafetyTimer = () => {
+      if (safetyTimer.current !== null) {
+        window.clearTimeout(safetyTimer.current);
+        safetyTimer.current = null;
+      }
+    };
+
     const finish = () => {
+      clearSafetyTimer();
       root.dataset.introDone = "true";
       document.body.style.overflow = "";
       setGone(true);
@@ -39,7 +67,23 @@ export function IntroOverlay() {
       return;
     }
 
-    sessionStorage.setItem(SESSION_KEY, "1");
+    markSessionSeen();
+
+    // Captured at the moment the listener is attached, so cleanup can
+    // remove it from the exact node it was added to without re-reading
+    // ref.current (which may have already changed by the time cleanup
+    // runs).
+    let listenerEl: HTMLDivElement | null = null;
+
+    // The plate's animationend listener must ignore the child words'
+    // rise animations bubbling up (they end at ~840ms/~1020ms): only the
+    // plate's own intro-wipe animation means "done". Without this check,
+    // skipping before the second word finishes rising fires finish()
+    // immediately and the wipe never plays.
+    const onAnimationEnd = (e: AnimationEvent) => {
+      if (e.animationName !== "intro-wipe") return;
+      finish();
+    };
 
     const leave = () => {
       if (leaving.current) return;
@@ -47,9 +91,10 @@ export function IntroOverlay() {
       const el = ref.current;
       if (!el) return finish();
       el.dataset.leaving = "true";
-      el.addEventListener("animationend", finish, { once: true });
+      listenerEl = el;
+      el.addEventListener("animationend", onAnimationEnd);
       // Safety net if animationend never fires.
-      window.setTimeout(finish, 800);
+      safetyTimer.current = window.setTimeout(finish, 800);
     };
 
     const timer = window.setTimeout(leave, 1400);
@@ -59,8 +104,10 @@ export function IntroOverlay() {
 
     return () => {
       window.clearTimeout(timer);
+      clearSafetyTimer();
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("pointerdown", onKey);
+      listenerEl?.removeEventListener("animationend", onAnimationEnd);
     };
   }, []);
 
