@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Inter } from "next/font/google";
+import { IntroOverlay } from "@/components/intro/IntroOverlay";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -33,8 +34,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${inter.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${montserrat.variable} ${inter.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){document.documentElement.dataset.js='1';try{var s=sessionStorage.getItem('nexlivo:intro-seen')==='1';var r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(s||r){document.documentElement.dataset.introDone='true';}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body>
+        <IntroOverlay />
+        {children}
+      </body>
     </html>
   );
 }

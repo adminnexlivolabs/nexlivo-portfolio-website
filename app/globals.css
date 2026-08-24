@@ -72,7 +72,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  [data-reveal] {
+  html[data-js="1"] [data-reveal] {
     opacity: 0;
     transform: translateY(8px);
     transition: opacity 400ms ease-out, transform 400ms ease-out;
@@ -81,4 +81,58 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* --- Intro overlay --- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--color-ink);
+  display: grid;
+  place-items: center;
+}
+
+.intro__mask {
+  display: block;
+  overflow: hidden;
+}
+
+.intro__word {
+  display: block;
+  transform: translateY(110%);
+}
+
+/* Anti-flash + reduced motion: never show the plate. */
+html[data-intro-done="true"] .intro {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-intro-done="true"]) body {
+    overflow: hidden;
+  }
+  .intro__word {
+    animation: intro-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .intro__word--1 { animation-delay: 320ms; }
+  .intro__word--2 { animation-delay: 500ms; }
+
+  .intro[data-leaving="true"] {
+    animation: intro-wipe 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes intro-rise {
+  to { transform: translateY(0); }
+}
+
+@keyframes intro-wipe {
+  to { transform: translateY(-100%); }
 }
