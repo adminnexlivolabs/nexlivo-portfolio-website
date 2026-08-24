@@ -85,6 +85,16 @@
   }
 }
 
+/* --- Announcement bar ---
+   A returning visitor who already dismissed the bar must never see it
+   flash in before disappearing. The inline <head> script (app/layout.tsx)
+   reads localStorage before first paint and sets data-announcement-dismissed
+   on <html> synchronously - same anti-flash pattern as .intro below - so
+   this rule (not a post-mount setState) is what hides it for them. */
+html[data-announcement-dismissed="1"] .announcement-bar {
+  display: none;
+}
+
 /* --- Intro overlay --- */
 .intro {
   position: fixed;

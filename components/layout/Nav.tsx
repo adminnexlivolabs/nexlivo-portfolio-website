@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { content } from "@/lib/content";
 import { Logo } from "@/components/ui/Logo";
 
@@ -8,6 +8,16 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // Every path that closes the drawer - Escape, a drawer link, the drawer
+  // CTA, or the toggle itself while open - must return focus to the toggle
+  // button explicitly. Relying on "the toggle was just clicked so it's
+  // already focused" doesn't hold in Safari, which doesn't focus buttons
+  // on click, so this is called from all four sites rather than assumed.
+  const closeDrawer = useCallback(() => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, []);
 
   // Focus trap + Escape handling while the drawer is open.
   useEffect(() => {
@@ -22,8 +32,7 @@ export function Nav() {
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setOpen(false);
-        triggerRef.current?.focus();
+        closeDrawer();
         return;
       }
       if (e.key !== "Tab") return;
@@ -42,7 +51,7 @@ export function Nav() {
 
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, closeDrawer]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink/12 bg-canvas">
@@ -80,7 +89,7 @@ export function Nav() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => (open ? closeDrawer() : setOpen(true))}
           className="inline-flex h-11 w-11 items-center justify-center text-ink md:hidden"
           data-testid="nav-toggle"
         >
@@ -117,7 +126,7 @@ export function Nav() {
               <li key={l.label}>
                 <a
                   href={l.href}
-                  onClick={() => setOpen(false)}
+                  onClick={closeDrawer}
                   className="flex min-h-[44px] items-center text-body text-ink no-underline"
                 >
                   {l.label}
@@ -127,7 +136,7 @@ export function Nav() {
           </ul>
           <a
             href={content.nav.cta.href}
-            onClick={() => setOpen(false)}
+            onClick={closeDrawer}
             className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-pill bg-ink px-5 text-body-sm font-medium text-canvas no-underline"
           >
             {content.nav.cta.label}

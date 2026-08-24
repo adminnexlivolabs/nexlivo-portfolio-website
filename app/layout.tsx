@@ -44,7 +44,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){document.documentElement.dataset.js='1';try{var s=sessionStorage.getItem('nexlivo:intro-seen')==='1';var r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(s||r){document.documentElement.dataset.introDone='true';}}catch(e){}})();`,
+            __html: `(function(){document.documentElement.dataset.js='1';try{var s=sessionStorage.getItem('nexlivo:intro-seen')==='1';var r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(s||r){document.documentElement.dataset.introDone='true';}}catch(e){}try{if(localStorage.getItem('nexlivo:announcement-dismissed')==='1'){document.documentElement.dataset.announcementDismissed='1';}}catch(e){}})();`,
           }}
         />
       </head>

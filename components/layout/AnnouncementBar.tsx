@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { content } from "@/lib/content";
 
 const KEY = "nexlivo:announcement-dismissed";
@@ -8,21 +8,22 @@ const KEY = "nexlivo:announcement-dismissed";
 export function AnnouncementBar() {
   const [hidden, setHidden] = useState(false);
 
-  useEffect(() => {
-    // Reading a persisted dismissal from localStorage on mount, so the
-    // server-rendered (always-visible) markup matches hydration and only
-    // flips to hidden once we know the client's prior choice.
-    try {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (localStorage.getItem(KEY) === "1") setHidden(true);
-    } catch {}
-  }, []);
-
   if (hidden) return null;
 
+  // Initial visibility for a returning visitor who already dismissed this is
+  // handled entirely by CSS: the inline <head> script (app/layout.tsx) reads
+  // localStorage before first paint and sets data-announcement-dismissed on
+  // <html>, and globals.css hides .announcement-bar on that attribute — the
+  // same pattern IntroOverlay uses for data-js/data-intro-done. That means
+  // this component never needs to read localStorage itself just to decide
+  // whether to render, so there is no post-mount setState and no flash of
+  // the bar for visitors who already dismissed it.
   return (
-    <div data-testid="announcement" className="relative bg-cyan text-ink">
-      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-center gap-3 px-4 py-2.5 md:px-6">
+    <div
+      data-testid="announcement"
+      className="announcement-bar relative bg-cyan text-ink"
+    >
+      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-center gap-3 py-2.5 pl-4 pr-16 md:pl-6 md:pr-16">
         <p className="text-caption font-medium">{content.announcement.text}</p>
         <a
           href={content.announcement.href}
@@ -40,7 +41,7 @@ export function AnnouncementBar() {
             } catch {}
             setHidden(true);
           }}
-          className="absolute right-4 hidden h-11 w-11 items-center justify-center text-ink md:inline-flex"
+          className="absolute right-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center text-ink"
         >
           <svg
             viewBox="0 0 16 16"
