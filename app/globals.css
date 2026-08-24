@@ -70,3 +70,15 @@
     color: var(--color-ink);
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 400ms ease-out, transform 400ms ease-out;
+  }
+  [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
