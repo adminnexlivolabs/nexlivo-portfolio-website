@@ -3,6 +3,7 @@ import { Montserrat, Inter } from "next/font/google";
 import { IntroOverlay } from "@/components/intro/IntroOverlay";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Nav } from "@/components/layout/Nav";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -53,6 +54,7 @@ export default function RootLayout({
         <AnnouncementBar />
         <Nav />
         <main id="top">{children}</main>
+        <Footer />
       </body>
     </html>
   );

@@ -41,11 +41,12 @@ test.describe("faq and contact", () => {
   });
 
   test("contact details are real tel: and mailto: links", async ({ page }) => {
+    const contact = page.locator("#contact");
     await expect(
-      page.getByRole("link", { name: content.contact.email }),
+      contact.getByRole("link", { name: content.contact.email }),
     ).toHaveAttribute("href", `mailto:${content.contact.email}`);
     await expect(
-      page.getByRole("link", { name: content.contact.phone }),
+      contact.getByRole("link", { name: content.contact.phone }),
     ).toHaveAttribute("href", "tel:+919704069431");
   });
 

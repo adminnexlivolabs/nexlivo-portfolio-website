@@ -59,7 +59,7 @@ test.describe("announcement bar and nav", () => {
     const header = page.locator("header");
     await expect(header).toHaveCSS("position", "sticky");
     for (const label of ["Services", "Process", "Capabilities", "FAQ"]) {
-      await expect(page.getByRole("link", { name: label })).toBeVisible();
+      await expect(header.getByRole("link", { name: label })).toBeVisible();
     }
   });
 
