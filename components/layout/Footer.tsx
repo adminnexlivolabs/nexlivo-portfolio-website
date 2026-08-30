@@ -1,5 +1,8 @@
 import { content } from "@/lib/content";
 import { Logo } from "@/components/ui/Logo";
+import { InstagramIcon, LinkedInIcon } from "@/components/ui/Icons";
+
+const socialIcons = { Instagram: InstagramIcon, LinkedIn: LinkedInIcon };
 
 export function Footer() {
   return (
@@ -20,6 +23,24 @@ export function Footer() {
             <p className="mt-4 max-w-[28ch] text-body-sm text-fog">
               {content.footer.tagline}
             </p>
+            <ul className="mt-5 flex gap-3">
+              {content.footer.social.map((s) => {
+                const Icon = socialIcons[s.label as keyof typeof socialIcons];
+                return (
+                  <li key={s.label}>
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Nexlivo Labs on ${s.label}`}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-card border border-ash text-fog transition-colors duration-150 hover:border-ink/30 hover:text-ink"
+                    >
+                      <Icon />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           {content.footer.columns.map((col) => (

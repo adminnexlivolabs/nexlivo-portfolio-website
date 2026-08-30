@@ -195,5 +195,9 @@ export const content = {
       },
     ],
     tagline: "A product studio for web and mobile.",
+    social: [
+      { label: "Instagram", href: "https://www.instagram.com/nexlivolabs/?hl=en" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/company/nexlivo-labs/" },
+    ],
   },
 } as const;
