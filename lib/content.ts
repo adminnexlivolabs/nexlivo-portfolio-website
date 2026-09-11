@@ -23,6 +23,7 @@ export const content = {
     home: { label: "Nexlivo Labs home", href: "/" },
     links: [
       { label: "Services", href: "/#services" },
+      { label: "Work", href: "/#work" },
       { label: "Process", href: "/#process" },
       { label: "Capabilities", href: "/#capabilities" },
       { label: "FAQ", href: "/#faq" },
@@ -56,6 +57,18 @@ export const content = {
       {
         title: "Cloud & DevOps",
         body: "Deployment pipelines, monitoring, and cost control — the part most studios hand back unfinished.",
+      },
+    ],
+  },
+
+  work: {
+    heading: "Selected work",
+    items: [
+      {
+        name: "Montaire",
+        category: "Premium Watches · E-commerce",
+        body: "End-to-end e-commerce build for a premium watch retailer.",
+        logo: "/clients/montaire-mark.png",
       },
     ],
   },
@@ -181,6 +194,7 @@ export const content = {
         title: "Company",
         links: [
           { label: "About", href: "/#about" },
+          { label: "Work", href: "/#work" },
           { label: "Process", href: "/#process" },
           { label: "Capabilities", href: "/#capabilities" },
           { label: "FAQ", href: "/#faq" },

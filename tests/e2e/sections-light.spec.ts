@@ -29,6 +29,17 @@ test.describe("light sections", () => {
     }
   });
 
+  test("selected work lists each client by name with a logo", async ({ page }) => {
+    for (const item of content.work.items) {
+      await expect(
+        page.getByRole("heading", { name: item.name, level: 3 }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("img", { name: `${item.name} logo` }),
+      ).toBeVisible();
+    }
+  });
+
   test("process renders four ordered steps ending in Ship & Run", async ({ page }) => {
     const items = page.locator("#process ol > li");
     await expect(items).toHaveCount(4);
@@ -36,7 +47,7 @@ test.describe("light sections", () => {
   });
 
   test("anchor links resolve to real section targets", async ({ page }) => {
-    for (const id of ["services", "process"]) {
+    for (const id of ["services", "work", "process"]) {
       await expect(page.locator(`#${id}`)).toHaveCount(1);
     }
   });

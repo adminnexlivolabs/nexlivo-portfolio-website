@@ -12,6 +12,15 @@ describe("content", () => {
     ]);
   });
 
+  it("lists at least one client in selected work, each with a name and body", () => {
+    expect(content.work.items.length).toBeGreaterThan(0);
+    for (const item of content.work.items) {
+      expect(item.name.length).toBeGreaterThan(0);
+      expect(item.body.length).toBeGreaterThan(0);
+      expect(item.logo.startsWith("/")).toBe(true);
+    }
+  });
+
   it("has exactly seven FAQ items, each a question", () => {
     expect(content.faq.items).toHaveLength(7);
     for (const item of content.faq.items) {
